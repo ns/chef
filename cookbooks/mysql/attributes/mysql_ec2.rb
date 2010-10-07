@@ -1,0 +1,1 @@
+mysql_db_path "/db/mysql" unless attribute?("mysql_db_path")
