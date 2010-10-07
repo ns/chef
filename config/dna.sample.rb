@@ -106,7 +106,7 @@ dna = {
     "monit",
     "gems",
     "rack_apps",
-    "newsble"
+    "your-cookbook"
   ]
 }
 
