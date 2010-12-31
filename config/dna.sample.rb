@@ -89,6 +89,10 @@ dna = {
   #   }
   # ],
   
+  :mongodb => {
+    :mongodb_db_path => "/data/mongodb"
+  },
+  
   :recipes => [
     "packages",
     "users",
