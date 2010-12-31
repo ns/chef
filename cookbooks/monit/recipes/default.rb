@@ -20,7 +20,12 @@ execute "enable-monit" do
   command "echo 'startup=1' > /etc/default/monit"
 end
 
-execute "restart-monit" do
-  command "pkill -9 monit && monit"
-  action :nothing
+# execute "restart-monit" do
+#   command "pkill -9 monit && monit"
+#   action :nothing
+# end
+
+service "monit" do
+  supports :status => false, :restart => true, :reload => true
+  action [ :enable, :start ]
 end

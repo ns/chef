@@ -3,13 +3,13 @@ require 'json'
 
 dna = {
   :user => "root",
-  :mysql_root_pass => "pw",
+  # :mysql_root_pass => "",
   :nginx_user => "deploy",
   
   :users =>  [
     {
       :username => "user",
-      :password => "pw",
+      :password => "test",
       :authorized_keys => "...",
       :shell => "/bin/zsh",
       :gid => 1000,
@@ -28,7 +28,8 @@ dna = {
       :authorized_keys => ["..."],
       :shell => "/bin/zsh",
       :known_hosts => [
-        "..."
+        "|1|cioyfz+ko9FIm1bhzvm5svcRlc0=|0rmtU2CoPLOTaA9xWwaeRGgbXlU= ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==",
+        "|1|fGtyHJzEGdCMdoUhXFtExfLnK+o=|0REhNAKK7SXbotUzdH2HkFnVQH8= ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="
       ],
       :ssh_keys => [
         {:file => "/etc/chef/files/users/deploy/id_rsa", :name => "id_rsa"}
@@ -44,13 +45,15 @@ dna = {
     "g++",
     "libxml2-dev",
     "libxslt1-dev",
-    "sendmail"
+    "sendmail",
+    "libhttpclient-ruby",
+    "libcurl4-openssl-dev" # for patron gem
   ],
   
   :applications => [
     {
-      :name => "site",
-      :server_names => "site.com",
+      :name => "app",
+      :server_names => "app.com",
       :ports => [4000, 4001],
       :user => "deploy",
       :group => "deploy",
@@ -60,16 +63,18 @@ dna = {
   ],
   
   :gems => [
-    "rake", 
-    {:name => "mysql", :version => "2.7"},
+    "rake",
+    # {:name => "mysql", :version => "2.7"},
     "thin",
+    "mail",
+    "thor",
     {:name => "rails", :version => "3.0.0"},
     "bundler"
   ],
   
   :monit => {
     :mailserver => "127.0.0.1",
-    :alert_email => "email@domain.com"
+    :alert_email => "email@email.com"
   },
   
   # :ebs_volumes => [
@@ -104,13 +109,13 @@ dna = {
     "rabbitmq",
     "git",
     "logrotate",
-    "nginx",
+    "nginx_source",
     "memcached",
     "cron",
     "monit",
     "gems",
     "rack_apps",
-    "your-cookbook"
+    # "your-app"
   ]
 }
 

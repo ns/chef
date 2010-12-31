@@ -3,7 +3,7 @@
 # Recipe:: default
 #
 
-include_recipe "nginx"
+include_recipe "nginx_source"
 include_recipe "memcached"
 
 node[:applications].each do |app|
@@ -36,7 +36,7 @@ node[:applications].each do |app|
   
   # Nginx Setup
   # -----------
-  template "#{node[:nginx_dir]}/apps/#{app[:name]}.conf" do
+  template "#{node[:nginx][:apps_dir]}/#{app[:name]}.conf" do
     owner app[:user]
     group app[:group]
     mode 0644
@@ -112,6 +112,12 @@ node[:applications].each do |app|
   
 end if node[:applications]
 
-service "nginx" do
-  action [ :restart ]
+execute "restart-nginx" do
+  command "sudo killall nginx"
+  command "/data/nginx/sbin/nginx"
 end
+
+
+# service "nginx" do
+#   action [ :restart ]
+# end

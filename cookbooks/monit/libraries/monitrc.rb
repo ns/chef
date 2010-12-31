@@ -8,8 +8,12 @@ class Chef
         mode 0644
         source "#{name}.monitrc.erb"
         variables variables
-        notifies :run, resources(:execute => "restart-monit")
+        # notifies :run, resources(:execute => "restart-monit")
         action :create
+      end
+      service "monit" do
+        supports :status => false, :restart => true, :reload => true
+        action [ :restart ]
       end
     end
   end

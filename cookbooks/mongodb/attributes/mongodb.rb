@@ -1,1 +1,1 @@
-mongodb_db_path "/db/mongodb" unless attribute?("mongodb_db_path")
+default[:mongodb][:mongodb_db_path] = "/db/mongodb"

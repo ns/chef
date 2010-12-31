@@ -56,11 +56,11 @@ directory "/db" do
 end
 
 execute "install-mongodb" do
-  command "mv #{mongodb_server_path} #{node[:mongodb_db_path]}"
-  not_if do FileTest.directory?(node[:mongodb_db_path]) end
+  command "mv #{mongodb_server_path} #{node[:mongodb][:mongodb_db_path]}"
+  not_if do FileTest.directory?(node[:mongodb][:mongodb_db_path]) end
 end
 
-directory node[:mongodb_db_path] do
+directory node[:mongodb][:mongodb_db_path] do
   owner "mongodb"
   group "mongodb"
   mode 0755
@@ -68,7 +68,7 @@ directory node[:mongodb_db_path] do
 end
 
 link mongodb_server_path do
- to node[:mongodb_db_path]
+ to node[:mongodb][:mongodb_db_path]
 end
 
 service "mongodb" do

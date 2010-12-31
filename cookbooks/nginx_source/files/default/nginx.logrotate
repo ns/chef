@@ -1,4 +1,4 @@
-<%= node[:nginx_log_dir] %>/*.log {
+<%= node[:nginx][:log_dir] %>/*.log {
   daily
   missingok
   compress

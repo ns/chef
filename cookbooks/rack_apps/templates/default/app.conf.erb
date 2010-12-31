@@ -15,10 +15,14 @@ server {
 
   root <%= @app_dir %>/current/public;
   
-  access_log <%= @node[:nginx_log_dir] %>/<%= @app_name %>.access.log main;
-  error_log <%= @node[:nginx_log_dir] %>/<%= @app_name %>.error.log notice;
+  log_format timed_combined '$remote_addr - $remote_user [$time_local]  '
+                      '"$request" $status $body_bytes_sent '
+                      '"$http_referer" "$http_user_agent" $request_time';
+  
+  access_log <%= @node[:nginx][:log_dir] %>/<%= @app_name %>.access.log timed_combined;
+  error_log <%= @node[:nginx][:log_dir] %>/<%= @app_name %>.error.log notice;
 
-  include <%= @node[:nginx_dir] %>/common/app.conf;
+  include <%= @node[:nginx][:dir] %>/common/app.conf;
 
   # ---------------------
   # Custom App Conf Begin
@@ -35,7 +39,7 @@ server {
     # auth_basic            "Restricted";
     # auth_basic_user_file  /etc/nginx/apps/<%=@app_name %>.users;
 
-    include <%= @node[:nginx_dir] %>/common/proxy.conf;
+    include <%= @node[:nginx][:dir] %>/common/proxy.conf;
 
     if (!-f $request_filename) {
       proxy_pass http://<%= @app_name %>;
@@ -45,5 +49,33 @@ server {
   
   location = /500.html {
     root <%= @app_dir %>/current/public;
+  }
+  
+  # internal publish endpoint (keep it private / protected)
+  location /publish {
+    allow 127.0.0.1/32;
+    deny all;
+    
+    set $push_channel_id $arg_id;      #/?id=239aff3 or somesuch
+    push_publisher;
+
+    push_store_messages on;            # enable message queueing 
+    push_message_timeout 2h;           # expire buffered messages after 2 hours
+    push_max_message_buffer_length 10; # store 10 messages
+    # push_min_message_recipients 0;     # minimum recipients before purge
+    # push_delete_oldest_received_message on;
+  }
+
+  # public long-polling endpoint
+  location /activity {
+    push_subscriber;
+
+    # how multiple listener requests to the same channel id are handled
+    # - last: only the most recent listener request is kept, 409 for others.
+    # - first: only the oldest listener request is kept, 409 for others.
+    # - broadcast: any number of listener requests may be long-polling.
+    push_subscriber_concurrency broadcast;
+    set $push_channel_id $arg_id;
+    default_type  text/plain;
   }
 }
